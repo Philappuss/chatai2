@@ -16,6 +16,7 @@ use App\Models\Chatbot;
 use App\Models\CodebaseDataSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
@@ -30,7 +31,7 @@ class ChatbotController extends Controller
     public function index()
     {
         return view('index', [
-            'chatbots' => Chatbot::all(),
+            'chatbots' => Chatbot::where('user_id',Auth::user()->id)->get(),
         ]);
     }
 
@@ -51,6 +52,7 @@ class ChatbotController extends Controller
         $chatbot->setToken(Str::random(20));
         $chatbot->setWebsite($request->getWebsite());
         $chatbot->setPromptMessage($request->getPromptMessage());
+        $chatbot->user_id = Auth::user()->id;
 
         // Save the chatbot to the database
         $chatbot->save();
@@ -83,6 +85,7 @@ class ChatbotController extends Controller
         $chatbot->setName($request->getName());
         $chatbot->setToken(Str::random(20));
         $chatbot->setPromptMessage($request->getPromptMessage());
+        $chatbot->user_id = Auth::user()->id;
 
         // Save the chatbot to the database
         $chatbot->save();
@@ -176,7 +179,7 @@ class ChatbotController extends Controller
     public function getChatView($token)
     {
         // Find the chatbot by token
-        $bot = Chatbot::where('token', $token)->firstOrFail();
+        $bot = Chatbot::where('token', $token)->where('user_id',Auth::user()->id)->firstOrFail();
 
         // Render the chat view with the chatbot data
         return view('chat', [
@@ -191,6 +194,7 @@ class ChatbotController extends Controller
         $chatbot->setName($request->getName());
         $chatbot->setToken(Str::random(20));
         $chatbot->setPromptMessage($request->getPromptMessage());
+        $chatbot->user_id = Auth::user()->id;
         $chatbot->save();
 
         $datasource = new CodebaseDataSource();

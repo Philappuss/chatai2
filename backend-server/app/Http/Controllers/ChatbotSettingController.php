@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chatbot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class ChatbotSettingController extends Controller
@@ -17,7 +18,7 @@ class ChatbotSettingController extends Controller
     public function generalSettings($id)
     {
         // Find the chatbot by ID
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
 
         return view('settings', [
             'bot' => $bot,
@@ -36,7 +37,7 @@ class ChatbotSettingController extends Controller
     public function generalSettingsUpdate(Request $request, $id)
     {
         // Find the chatbot by ID
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
 
         // Validate the request
         $this->validate($request, [
@@ -60,7 +61,7 @@ class ChatbotSettingController extends Controller
     public function dataSettings(Request $request, $id)
     {
         // Find the chatbot by ID
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
 
         // Get website data sources and PDF data sources for the chatbot
         $websiteDataSources = $bot->getWebsiteDataSources()->get();
@@ -85,7 +86,7 @@ class ChatbotSettingController extends Controller
     public function analyticsSettings(Request $request, $id)
     {
         // Find the chatbot by ID
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
 
         // Get website data sources for the chatbot
         $dataSources = $bot->getWebsiteDataSources()->get();
@@ -106,7 +107,7 @@ class ChatbotSettingController extends Controller
     public function integrationsSettings(Request $request, $id)
     {
         // Find the chatbot by ID
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
 
         return view('settings-integrations', [
             'bot' => $bot,
@@ -122,7 +123,7 @@ class ChatbotSettingController extends Controller
     public function dataSourcesUpdates($id)
     {
         // Find the chatbot by ID
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
 
         // Get website data sources for the chatbot
         $dataSources = $bot->getWebsiteDataSources()->get();
@@ -141,7 +142,7 @@ class ChatbotSettingController extends Controller
     public function themeSettings($id)
     {
         // Find the chatbot by ID
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
 
         return view('settings-theme', [
             'bot' => $bot,

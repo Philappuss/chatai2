@@ -6,13 +6,14 @@ use App\Http\Events\PdfDataSourceWasAdded;
 use App\Http\Requests\UploadPdfFilesRequest;
 use App\Http\Services\HandlePdfDataSource;
 use App\Models\Chatbot;
+use Illuminate\Support\Facades\Auth;
 
 class PdfDataSourceController extends Controller
 {
     public function create(UploadPdfFilesRequest $request, $id)
     {
         /** @var Chatbot $bot */
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
         $files = $request->file('pdffiles');
         $dataSource = (new HandlePdfDataSource($bot, $files))->handle();
         event(new PdfDataSourceWasAdded($bot->getId(), $dataSource->getId()));
@@ -23,7 +24,7 @@ class PdfDataSourceController extends Controller
     public function show($id)
     {
         /** @var Chatbot $bot */
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
         $pdfDataSources = $bot->getPdfFilesDataSources()->get();
         return view('onboarding.other-data-sources-pdf', ['bot' => $bot, 'pdfDataSources' => $pdfDataSources]);
     }

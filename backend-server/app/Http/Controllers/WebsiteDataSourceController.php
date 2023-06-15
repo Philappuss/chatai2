@@ -8,6 +8,7 @@ use App\Http\Requests\AddWebsiteDataSourceRequest;
 use App\Models\Chatbot;
 use App\Models\WebsiteDataSource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Ramsey\Uuid\Uuid;
 
 class WebsiteDataSourceController extends Controller
@@ -17,13 +18,13 @@ class WebsiteDataSourceController extends Controller
     public function show(Request $request, $id)
     {
         /** @var Chatbot $bot */
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
         return view('onboarding.other-data-sources-website', ['bot' => $bot]);
     }
 
     public function create(AddWebsiteDataSourceRequest $request, $id){
         /** @var Chatbot $bot */
-        $bot = Chatbot::where('id', $id)->firstOrFail();
+        $bot = Chatbot::where('id', $id)->where('user_id',Auth::user()->id)->firstOrFail();
 
         $dataSource = new WebsiteDataSource();
         $dataSource->setId(Uuid::uuid4());
